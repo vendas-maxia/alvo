@@ -1,49 +1,45 @@
-# CRM Sicredi Hauer — como colocar no ar (sem usar terminal)
+# Base de clientes Maxfio / AtivaMax — como colocar no ar
 
-Este é um projeto completo (Vite + React + Tailwind), já configurado com o
-Supabase. Siga os passos abaixo — tudo pode ser feito pelo site do GitHub e
-do Cloudflare, sem precisar rodar comando nenhum no seu computador.
+Mesmo esquema do CRM Sicredi/MaxIA: projeto Vite + React já configurado,
+conectado ao Supabase (mesmo projeto). Sem precisar rodar nada no terminal
+do Mac — só GitHub + Cloudflare Pages.
 
-## Passo 1 — Criar um repositório no GitHub
+## Passo 1 — Rodar o SQL no Supabase
 
-1. Acesse https://github.com e crie uma conta (se ainda não tiver)
-2. Clique em "New repository" (Novo repositório)
-3. Dê um nome, ex: `crm-sicredi-hauer`
-4. Deixe como **privado** (recomendado, já que tem a chave do Supabase)
-5. Clique em "Create repository"
+1. Abra o Supabase → **SQL Editor** → **New query**
+2. Cole o conteúdo do arquivo `supabase-schema-ativamax-carteira.sql` (que veio
+   junto com este pacote) e clique em **Run**
 
-## Passo 2 — Subir os arquivos desta pasta
+Isso cria a tabela `ativamax_carteira_clientes`, vazia por enquanto.
 
-1. Na página do repositório recém-criado, clique em "uploading an existing file"
-   (ou "Add file" → "Upload files")
-2. Arraste **todos os arquivos e pastas** desta pasta `crm-sicredi-hauer-projeto`
-   para dentro da janela do navegador (mantenha a estrutura de pastas — o
-   arquivo `src/CRMSicrediHauer.jsx` precisa continuar dentro de `src/`)
-3. Clique em "Commit changes" (Confirmar alterações)
+## Passo 2 — Criar um repositório no GitHub
+
+1. github.com → **New repository** → nome, ex: `base-clientes-maxfio`
+2. Deixe **privado**
+3. Suba **todos os arquivos e pastas** desta pasta `base-maxfio-projeto`
+   (Add file → Upload files, mantendo a estrutura — `src/main.jsx`,
+   `src/BaseClientesMaxfio.jsx` e `src/index.css` precisam ficar DENTRO
+   da pasta `src`)
+4. Commit changes
 
 ## Passo 3 — Conectar ao Cloudflare Pages
 
-1. Acesse o painel do Cloudflare → **Workers & Pages**
-2. Clique em "Create application" → aba **Pages** → "Connect to Git"
-3. Autorize o Cloudflare a acessar sua conta do GitHub, se pedir
-4. Selecione o repositório `crm-sicredi-hauer` que você acabou de criar
-5. Na tela de configuração de build, preencha:
-   - **Framework preset**: Vite
+1. Workers & Pages → Create application → aba **Pages** → Connect to Git
+2. Selecione o repositório que você acabou de criar
+3. Configuração de build:
    - **Build command**: `npm run build`
    - **Build output directory**: `dist`
-6. Clique em "Save and Deploy"
+   - (se pedir "Framework preset" e não tiver Vite na lista, escolha "None")
+4. Save and Deploy
 
-O Cloudflare vai baixar o projeto, rodar o `npm install` e o build sozinho —
-isso leva 1 a 3 minutos. Quando terminar, ele te dá um link
-(algo como `crm-sicredi-hauer.pages.dev`) onde o CRM já estará no ar,
-conectado ao Supabase.
+## Passo 4 — Importar os dados pela primeira vez
 
-## Depois de publicado
+Depois que o site estiver no ar, abra ele e clique em **"Importar CSV"**,
+selecionando o arquivo `ativamax_carteira_rows.csv`. O sistema lê o arquivo
+no seu navegador e envia os registros para o Supabase em lotes de 500 —
+para ~7.290 linhas isso leva alguns segundos. Depois disso os dados já
+ficam salvos no banco; da próxima vez que abrir o site, carrega direto
+do Supabase, sem precisar importar de novo.
 
-Qualquer atualização futura: é só subir o arquivo alterado de novo no GitHub
-(mesma tela do Passo 2) e o Cloudflare rebuilda e republica automaticamente.
-
-## Se der erro no build
-
-Copie a mensagem de erro que aparece no painel do Cloudflare (aba "Deployments"
-→ clique no deploy que falhou → veja o log) e me mande — eu ajudo a resolver.
+Reimportar o mesmo CSV depois (ou uma versão atualizada) não duplica nada —
+os registros são atualizados pelo `id` de cada linha.
