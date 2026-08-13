@@ -487,6 +487,61 @@ function CRMWorkspace({ modo, onSwitchModo }) {
 
   const convertidosCount = modo === "maxia" ? stats.maxiaFechados : stats.abertas;
 
+  const dashboardData = useMemo(() => {
+    const hoje = new Date().toISOString().slice(0, 10);
+    const seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const doModo = clients.filter((c) => (c.caminhos || []).includes(modo));
+    const stages = modo === "maxia" ? MAXIA_STAGES : PIPELINE_STAGES;
+    const getStage = (c) => (modo === "maxia" ? c.statusMaxIA || "nao_iniciado" : c.etapa || "novo_lead");
+
+    const porEtapa = stages.map((s) => ({ label: s.label, count: doModo.filter((c) => getStage(c) === s.id).length }));
+
+    const porRegiaoMap = {};
+    for (const c of doModo) porRegiaoMap[c.regiao || "—"] = (porRegiaoMap[c.regiao || "—"] || 0) + 1;
+    const porRegiao = Object.entries(porRegiaoMap).sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+    const porRamoMap = {};
+    for (const c of doModo) porRamoMap[c.ramo || "—"] = (porRamoMap[c.ramo || "—"] || 0) + 1;
+    const porRamo = Object.entries(porRamoMap).sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+    const semReuniao = doModo.filter((c) => (c.reunioes || []).length === 0).length;
+    const totalReunioes = doModo.reduce((sum, c) => sum + (c.reunioes || []).length, 0);
+    const reunioesEstaSemana = doModo.filter((c) => (c.reunioes || []).some((r) => r.data && r.data.slice(0, 10) >= seteDiasAtras)).length;
+    const visitasAtrasadas = doModo.filter((c) => c.proximaVisita && c.proximaVisita < hoje).length;
+    const proximasVisitas = doModo
+      .filter((c) => c.proximaVisita && c.proximaVisita >= hoje)
+      .sort((a, b) => a.proximaVisita.localeCompare(b.proximaVisita))
+      .slice(0, 5);
+
+    const atividadeRecente = doModo
+      .flatMap((c) => (c.timeline || []).map((t) => ({ ...t, cliente: c.nome, clienteId: c.id })))
+      .sort((a, b) => (b.data || "").localeCompare(a.data || ""))
+      .slice(0, 8);
+
+    const perdidos = doModo.filter((c) => getStage(c) === (modo === "maxia" ? "perdido" : "perdido")).length;
+    const convertidos = modo === "maxia" ? doModo.filter((c) => c.statusMaxIA === "cliente_fechado").length : doModo.filter((c) => c.statusConta === "aberta").length;
+    const taxaConversao = doModo.length ? Math.round((convertidos / doModo.length) * 100) : 0;
+
+    return {
+      total: doModo.length,
+      quentes: doModo.filter((c) => c.prioridade === "quente").length,
+      mornos: doModo.filter((c) => c.prioridade === "morno").length,
+      frios: doModo.filter((c) => c.prioridade === "frio").length,
+      convertidos,
+      taxaConversao,
+      perdidos,
+      semReuniao,
+      totalReunioes,
+      reunioesEstaSemana,
+      visitasAtrasadas,
+      proximasVisitas,
+      porEtapa,
+      porRegiao,
+      porRamo,
+      atividadeRecente,
+    };
+  }, [clients, modo]);
+
   function handleNew() {
     const c = emptyClient();
     if (modo === "sicredi" || modo === "maxia") c.caminhos = [modo];
@@ -705,6 +760,12 @@ function CRMWorkspace({ modo, onSwitchModo }) {
         <div className="flex items-center gap-2">
           <div className={`flex ${modo === "maxia" ? "bg-violet-900" : "bg-emerald-800"} rounded-md p-0.5`}>
             <button
+              onClick={() => setViewMode("dashboard")}
+              className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded ${viewMode === "dashboard" ? (modo === "maxia" ? "bg-white text-violet-950" : "bg-white text-emerald-900") : (modo === "maxia" ? "text-violet-100" : "text-emerald-100")}`}
+            >
+              <BarChart3 size={13} /> Dashboard
+            </button>
+            <button
               onClick={() => setViewMode("lista")}
               className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded ${viewMode === "lista" ? (modo === "maxia" ? "bg-white text-violet-950" : "bg-white text-emerald-900") : (modo === "maxia" ? "text-violet-100" : "text-emerald-100")}`}
             >
@@ -742,7 +803,7 @@ function CRMWorkspace({ modo, onSwitchModo }) {
       </div>
 
       {/* Quick filters */}
-      {viewMode !== "clientes" && (
+      {viewMode !== "clientes" && viewMode !== "dashboard" && (
       <div className="px-5 py-2 bg-white border-b border-stone-200 flex items-center gap-2 flex-wrap no-print">
         <span className="text-xs text-stone-400 flex items-center gap-1"><Filter size={12} /> Rápidos:</span>
         {[
@@ -768,7 +829,9 @@ function CRMWorkspace({ modo, onSwitchModo }) {
       </div>
       )}
 
-      {viewMode === "pipeline" ? (
+      {viewMode === "dashboard" ? (
+        <DashboardView data={dashboardData} modo={modo} onSelectClient={(c) => { setSelectedId(c.id); setViewMode("lista"); }} clients={clients} />
+      ) : viewMode === "pipeline" ? (
         <PipelineBoard
           clients={filtered}
           stages={modo === "maxia" ? MAXIA_STAGES : PIPELINE_STAGES}
@@ -1311,6 +1374,105 @@ function PipelineBoard({ clients, stages, getStageId, onSelect, onMove, onQuickE
           );
 
         })}
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ label, value, accent, sub }) {
+  return (
+    <div className="bg-white border border-stone-200 rounded-lg p-4">
+      <div className="text-xs text-stone-500">{label}</div>
+      <div className="text-2xl font-bold mt-1" style={{ color: accent || "#1c1c1a" }}>{value}</div>
+      {sub && <div className="text-[11px] text-stone-400 mt-0.5">{sub}</div>}
+    </div>
+  );
+}
+
+function BarList({ items, maxColor }) {
+  const max = Math.max(1, ...items.map(([, v]) => v));
+  return (
+    <div className="space-y-2">
+      {items.length === 0 && <div className="text-xs text-stone-400">Sem dados ainda.</div>}
+      {items.map(([label, count]) => (
+        <div key={label}>
+          <div className="flex items-center justify-between text-xs text-stone-600 mb-0.5">
+            <span className="truncate">{label}</span>
+            <span className="font-medium text-stone-800">{count}</span>
+          </div>
+          <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
+            <div className="h-full rounded-full" style={{ width: `${(count / max) * 100}%`, background: maxColor || "#00612B" }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DashboardView({ data, modo, clients, onSelectClient }) {
+  const accent = modo === "maxia" ? "#4C1D95" : "#00612B";
+  return (
+    <div className="flex-1 overflow-y-auto p-5 bg-stone-100 space-y-5 no-print">
+      <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
+        <StatCard label="Leads na base" value={data.total} accent={accent} />
+        <StatCard label="Quentes" value={data.quentes} accent="#B45309" />
+        <StatCard label="Mornos" value={data.mornos} accent="#EA580C" />
+        <StatCard label="Frios" value={data.frios} accent="#1E40AF" />
+        <StatCard label={modo === "maxia" ? "Clientes MaxIA" : "Contas abertas"} value={data.convertidos} accent="#166534" />
+        <StatCard label="Taxa de conversão" value={`${data.taxaConversao}%`} accent={accent} />
+      </div>
+
+      <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
+        <StatCard label="Sem reunião registrada" value={data.semReuniao} accent="#991B1B" sub="atenção — nunca contatados" />
+        <StatCard label="Reuniões esta semana" value={data.reunioesEstaSemana} accent="#166534" />
+        <StatCard label="Total de reuniões" value={data.totalReunioes} accent={accent} />
+        <StatCard label="Visitas atrasadas" value={data.visitasAtrasadas} accent="#991B1B" />
+        <StatCard label="Perdidos" value={data.perdidos} accent="#78716C" />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="bg-white border border-stone-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">{modo === "maxia" ? "Funil MaxIA" : "Pipeline Sicredi"}</h3>
+          <BarList items={data.porEtapa.map((e) => [e.label, e.count])} maxColor={accent} />
+        </div>
+        <div className="bg-white border border-stone-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">Por região</h3>
+          <BarList items={data.porRegiao} maxColor={accent} />
+        </div>
+        <div className="bg-white border border-stone-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">Por ramo</h3>
+          <BarList items={data.porRamo} maxColor={accent} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="bg-white border border-stone-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-stone-700 mb-3 flex items-center gap-1.5"><Calendar size={14} /> Próximas visitas</h3>
+          {data.proximasVisitas.length === 0 && <div className="text-xs text-stone-400">Nenhuma visita agendada.</div>}
+          <div className="space-y-1.5">
+            {data.proximasVisitas.map((c) => (
+              <button key={c.id} onClick={() => onSelectClient(c)} className="w-full flex items-center justify-between text-xs text-left px-2 py-1.5 rounded hover:bg-stone-50">
+                <span className="text-stone-700 truncate">{c.nome || "Sem nome"}</span>
+                <span className="text-stone-400 flex-shrink-0 ml-2">{fmtDate(c.proximaVisita)}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="bg-white border border-stone-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-stone-700 mb-3 flex items-center gap-1.5"><Clock size={14} /> Atividade recente</h3>
+          {data.atividadeRecente.length === 0 && <div className="text-xs text-stone-400">Nenhum evento registrado ainda.</div>}
+          <div className="space-y-2">
+            {data.atividadeRecente.map((t) => {
+              const c = clients.find((cl) => cl.id === t.clienteId);
+              return (
+                <div key={t.id} className="text-xs cursor-pointer hover:bg-stone-50 rounded px-2 py-1" onClick={() => c && onSelectClient(c)}>
+                  <div className="text-stone-400">{fmtDateTime(t.data)} · <span className="font-medium text-stone-600">{t.cliente}</span></div>
+                  <div className="text-stone-600">{t.evento}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
