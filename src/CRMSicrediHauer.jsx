@@ -886,7 +886,7 @@ function CRMWorkspace({ modo, onSwitchModo }) {
   }
 
   return (
-    <div style={{ minHeight: 700, fontFamily: "Inter, ui-sans-serif, system-ui" }} className="w-full bg-stone-100 text-stone-900 flex flex-col">
+    <div style={{ height: "100vh", fontFamily: "Inter, ui-sans-serif, system-ui" }} className="w-full bg-stone-100 text-stone-900 flex flex-col overflow-hidden">
       {/* Top bar */}
       <div className={`${modo === "maxia" ? "bg-violet-950" : "bg-emerald-900"} text-white px-5 py-4 flex items-center justify-between shadow-sm flex-wrap gap-3 no-print`}>
         <div className="flex items-center gap-3">
@@ -1011,7 +1011,15 @@ function CRMWorkspace({ modo, onSwitchModo }) {
       )}
 
       {viewMode === "dashboard" ? (
-        <DashboardView data={dashboardData} modo={modo} onSelectClient={(c) => { setSelectedId(c.id); setViewMode("lista"); }} clients={clients} />
+        <DashboardView
+          data={dashboardData}
+          modo={modo}
+          onSelectClient={(c) => { setSelectedId(c.id); setViewMode("lista"); }}
+          clients={clients}
+          listClients={filtered}
+          search={search}
+          setSearch={setSearch}
+        />
       ) : viewMode === "pipeline" ? (
         <PipelineBoard
           clients={filtered}
@@ -1620,10 +1628,44 @@ function BarList({ items, maxColor }) {
   );
 }
 
-function DashboardView({ data, modo, clients, onSelectClient }) {
+function DashboardView({ data, modo, clients, listClients, search, setSearch, onSelectClient }) {
   const accent = modo === "maxia" ? "#4C1D95" : "#00612B";
   return (
-    <div className="flex-1 overflow-y-auto p-5 bg-stone-100 space-y-5 no-print">
+    <div className="flex-1 flex min-h-0 no-print">
+      {/* Lista de clientes ao lado do dashboard */}
+      <div style={{ width: 320 }} className="flex-shrink-0 border-r border-stone-200 bg-white flex flex-col">
+        <div className="p-3 border-b border-stone-200">
+          <div className="relative">
+            <Search size={14} className="absolute left-2.5 top-2.5 text-stone-400" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por nome, CNPJ, ramo..."
+              className="w-full pl-8 pr-3 py-2 text-sm border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+          <div className="text-[11px] text-stone-400 mt-1.5">{listClients.length} clientes na lista atual</div>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          {listClients.length === 0 && <div className="p-6 text-center text-xs text-stone-400">Nenhum cliente encontrado.</div>}
+          {listClients.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => onSelectClient(c)}
+              className="w-full text-left px-3 py-2.5 border-b border-stone-100 hover:bg-stone-50 transition-colors"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="font-medium text-xs text-stone-800 truncate">{c.nome || "Sem nome"}</span>
+                <PriorityBadge value={c.prioridade} />
+              </div>
+              <div className="mt-1 text-[11px] text-stone-500 truncate">{c.regiao} · {c.ramo}</div>
+              <div className="mt-1"><StatusBadge value={c.statusConta} /></div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-5 bg-stone-100 space-y-5">
       <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
         <StatCard label="Leads na base" value={data.total} accent={accent} />
         <StatCard label="Quentes" value={data.quentes} accent="#B45309" />
@@ -1684,6 +1726,7 @@ function DashboardView({ data, modo, clients, onSelectClient }) {
             })}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
