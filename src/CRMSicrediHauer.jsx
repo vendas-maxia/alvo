@@ -457,6 +457,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
   const [saving, setSaving] = useState(false);
   const [viewMode, setViewMode] = useState("lista"); // 'lista' | 'pipeline'
   const [quickFilter, setQuickFilter] = useState(null); // 'quente' | 'aberta' | 'atrasada' | 'sem_contato'
+  const [resumoAberto, setResumoAberto] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [userConfig, setUserConfig] = useState({ nome: "", cargo: "", email: "", regional: "Hauer" });
   const [printMode, setPrintMode] = useState(null);
@@ -1062,82 +1063,95 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
       ) : viewMode === "usuarios" ? (
         <UsuariosView currentUser={currentUser} />
       ) : (
+      <>
+      <div className={`flex-shrink-0 border-b ${modo === "maxia" ? "border-violet-200 bg-violet-50" : "border-emerald-200 bg-emerald-50"} px-3 py-1.5`}>
+        <button onClick={() => setResumoAberto(!resumoAberto)} className={`flex items-center gap-1.5 text-xs font-medium ${modo === "maxia" ? "text-violet-800" : "text-emerald-800"}`}>
+          {resumoAberto ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+          Resumo — {dashboardData.total} leads · {dashboardData.quentes} quentes · {dashboardData.convertidos} {modo === "maxia" ? "clientes MaxIA" : "contas abertas"} · {dashboardData.visitasAtrasadas} visitas atrasadas
+        </button>
+        {resumoAberto && (
+          <div className="grid gap-2 mt-2 pb-1" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))" }}>
+            <StatCard label="Leads" value={dashboardData.total} accent={modo === "maxia" ? "#4C1D95" : "#00612B"} />
+            <StatCard label="Quentes" value={dashboardData.quentes} accent="#B45309" />
+            <StatCard label={modo === "maxia" ? "Clientes MaxIA" : "Contas abertas"} value={dashboardData.convertidos} accent="#166534" />
+            <StatCard label="Sem reunião" value={dashboardData.semReuniao} accent="#991B1B" />
+            <StatCard label="Visitas atrasadas" value={dashboardData.visitasAtrasadas} accent="#991B1B" />
+            <StatCard label="Taxa conversão" value={`${dashboardData.taxaConversao}%`} accent={modo === "maxia" ? "#4C1D95" : "#00612B"} />
+          </div>
+        )}
+      </div>
       <div className="flex flex-1 min-h-0 no-print">
         {/* Área de tabela em tela cheia */}
         <div className="flex-1 min-w-0 bg-white flex flex-col">
-          <div className="p-3 border-b border-stone-200 space-y-2">
-            <div className="flex items-end gap-2">
-              <div className="grid gap-2 flex-1" style={{ gridTemplateColumns: "minmax(180px,2fr) repeat(5, minmax(110px,1fr))" }}>
+          <div className="px-3 py-2 space-y-1.5 shadow-[0_2px_10px_-2px_rgba(0,97,43,0.35)] border-b border-emerald-800/10 relative z-10">
+            <div className="flex items-center gap-2">
+              <div className="grid gap-1.5 flex-1" style={{ gridTemplateColumns: "minmax(160px,2fr) repeat(5, minmax(100px,1fr))" }}>
                 <div className="relative">
-                  <Search size={14} className="absolute left-2.5 top-2.5 text-stone-400" />
+                  <Search size={13} className="absolute left-2 top-1.5 text-stone-400" />
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Buscar por nome, CNPJ, ramo..."
-                    className="w-full pl-8 pr-3 py-2 text-xs border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    placeholder="Buscar nome, CNPJ, ramo..."
+                    className="w-full pl-7 pr-2 py-1 text-xs border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
-                <select value={filtroRegiao} onChange={(e) => setFiltroRegiao(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                <select value={filtroRegiao} onChange={(e) => setFiltroRegiao(e.target.value)} className="text-xs border border-stone-300 rounded-md px-1.5 py-1">
                   <option>Todas</option>
                   {regioesDisponiveis.map((r) => <option key={r}>{r}</option>)}
                 </select>
-                <select value={filtroRamo} onChange={(e) => setFiltroRamo(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                <select value={filtroRamo} onChange={(e) => setFiltroRamo(e.target.value)} className="text-xs border border-stone-300 rounded-md px-1.5 py-1">
                   <option>Todos</option>
                   {RAMOS.map((r) => <option key={r}>{r}</option>)}
                 </select>
-                <select value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                <select value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)} className="text-xs border border-stone-300 rounded-md px-1.5 py-1">
                   <option>Todas</option>
                   <option value="quente">🔥 Quente</option>
                   <option value="morno">🌡️ Morno</option>
                   <option value="frio">❄️ Frio</option>
                 </select>
-                <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)} className="text-xs border border-stone-300 rounded-md px-1.5 py-1">
                   <option>Todos</option>
                   <option value="nao_iniciado">Não iniciado</option>
                   <option value="em_andamento">Em andamento</option>
                   <option value="aberta">Conta aberta</option>
                 </select>
-                <select value={filtroCaminho} onChange={(e) => setFiltroCaminho(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                <select value={filtroCaminho} onChange={(e) => setFiltroCaminho(e.target.value)} className="text-xs border border-stone-300 rounded-md px-1.5 py-1">
                   <option value="Todos">Todos os caminhos</option>
                   {CAMINHOS_LEAD.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
                 </select>
               </div>
               <button
                 onClick={() => { setSearch(""); setFiltroRegiao("Todas"); setFiltroRamo("Todos"); setFiltroPrioridade("Todas"); setFiltroStatus("Todos"); setFiltroCaminho("Todos"); setQuickFilter(null); }}
-                className="flex-shrink-0 flex items-center gap-1 text-xs border border-stone-300 rounded-md px-3 py-2 text-stone-500 hover:bg-stone-50 hover:text-stone-700"
+                className="flex-shrink-0 flex items-center gap-1 text-xs border border-stone-300 rounded-md px-2 py-1 text-stone-500 hover:bg-stone-50 hover:text-stone-700"
                 title="Limpar todos os filtros"
               >
-                <X size={13} /> Limpar
+                <X size={12} /> Limpar
               </button>
-            </div>
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <div className="flex items-center gap-2 flex-wrap">
-                <button
-                  onClick={handleNew}
-                  className="flex items-center gap-1.5 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-medium px-3 py-1.5 rounded-md transition-colors"
-                >
-                  <Plus size={14} /> Novo cliente potencial
-                </button>
-                <button
-                  onClick={() => carteiraFileInputRef.current?.click()}
-                  disabled={importingCarteira}
-                  className="flex items-center gap-1.5 border border-stone-300 hover:bg-stone-50 text-stone-600 text-xs font-medium px-3 py-1.5 rounded-md transition-colors disabled:opacity-50"
-                >
-                  <Upload size={13} /> Importar carteira Maxfio (CSV)
-                </button>
-                <input
-                  ref={carteiraFileInputRef}
-                  type="file"
-                  accept=".csv"
-                  className="hidden"
-                  onChange={(e) => handleImportCarteira(e.target.files?.[0])}
-                />
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-medium text-stone-400 flex items-center gap-1"><Printer size={11} /> PDF:</span>
-                <button onClick={() => openPrintReport("statusConta")} className="text-[11px] border border-stone-300 rounded-md px-2 py-1 hover:bg-stone-50">Por status</button>
-                <button onClick={() => openPrintReport("regiao")} className="text-[11px] border border-stone-300 rounded-md px-2 py-1 hover:bg-stone-50">Por região</button>
-                <button onClick={() => openPrintReport("ramo")} className="text-[11px] border border-stone-300 rounded-md px-2 py-1 hover:bg-stone-50">Por ramo</button>
+              <button
+                onClick={handleNew}
+                className="flex-shrink-0 flex items-center gap-1 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-medium px-2.5 py-1 rounded-md transition-colors"
+              >
+                <Plus size={13} /> Novo
+              </button>
+              <button
+                onClick={() => carteiraFileInputRef.current?.click()}
+                disabled={importingCarteira}
+                title="Importar carteira Maxfio (CSV)"
+                className="flex-shrink-0 flex items-center gap-1 border border-stone-300 hover:bg-stone-50 text-stone-600 text-xs font-medium px-2 py-1 rounded-md transition-colors disabled:opacity-50"
+              >
+                <Upload size={12} />
+              </button>
+              <input
+                ref={carteiraFileInputRef}
+                type="file"
+                accept=".csv"
+                className="hidden"
+                onChange={(e) => handleImportCarteira(e.target.files?.[0])}
+              />
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <button onClick={() => openPrintReport("statusConta")} title="PDF por status" className="text-[11px] border border-stone-300 rounded-md px-1.5 py-1 hover:bg-stone-50 flex items-center gap-1"><Printer size={11} />Status</button>
+                <button onClick={() => openPrintReport("regiao")} title="PDF por região" className="text-[11px] border border-stone-300 rounded-md px-1.5 py-1 hover:bg-stone-50">Região</button>
+                <button onClick={() => openPrintReport("ramo")} title="PDF por ramo" className="text-[11px] border border-stone-300 rounded-md px-1.5 py-1 hover:bg-stone-50">Ramo</button>
               </div>
             </div>
             {importCarteiraMsg && (
@@ -1234,10 +1248,10 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
         {/* Painel de detalhe/edição — sobreposto em quase tela cheia */}
         {editing && (
           <div
-            className="fixed inset-0 z-40 bg-stone-900/50 flex items-start justify-center p-3 md:p-6 overflow-y-auto no-print"
+            className="fixed inset-0 z-40 bg-stone-900/50 flex items-center justify-center p-3 md:p-6 no-print"
             onClick={(e) => { if (e.target === e.currentTarget) setSelectedId(null); }}
           >
-            <div className="bg-stone-100 rounded-xl shadow-2xl w-full max-w-6xl my-2 relative">
+            <div style={{ width: "90vw", maxWidth: 1500, height: "88vh" }} className="bg-stone-100 rounded-xl shadow-2xl relative flex flex-col overflow-hidden">
               <button
                 onClick={() => setSelectedId(null)}
                 title="Fechar"
@@ -1245,55 +1259,71 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               >
                 <X size={18} />
               </button>
-              <div className="p-5 md:p-7">
-            <div className="max-w-4xl space-y-4 pb-4 mx-auto">
-              {/* Header */}
-              <div className="bg-white border border-stone-200 rounded-lg p-4 flex items-start justify-between gap-4">
-                <div className="flex-1 space-y-2">
+
+              {/* Cabeçalho fixo — nome, filtros/status, etiquetas e ações */}
+              <div className={`flex-shrink-0 ${modo === "maxia" ? "bg-gradient-to-r from-violet-900 to-violet-950" : "bg-gradient-to-r from-emerald-800 to-emerald-900"} text-white p-4 md:p-5 space-y-3`}>
+                <div className="flex items-start justify-between gap-4">
                   <input
                     value={editing.nome}
                     onChange={(e) => handleSaveField({ nome: e.target.value })}
                     placeholder="Nome da empresa"
-                    className="text-lg font-semibold w-full border-b border-transparent hover:border-stone-200 focus:border-emerald-600 focus:outline-none py-1"
+                    className="text-lg font-semibold flex-1 bg-transparent border-b border-white/0 hover:border-white/30 focus:border-white focus:outline-none py-1 text-white placeholder-white/50"
                   />
-                  <div className="flex flex-wrap items-center gap-2">
-                    <select
-                      value={editing.prioridade}
-                      onChange={(e) => handleSaveField({ prioridade: e.target.value })}
-                      className="text-xs border border-stone-300 rounded-full px-2 py-1"
-                    >
-                      <option value="quente">🔥 Quente</option>
-                      <option value="morno">🌡️ Morno</option>
-                      <option value="frio">❄️ Frio</option>
-                    </select>
-                    <select
-                      value={editing.statusConta}
-                      onChange={(e) => handleSaveField({ statusConta: e.target.value })}
-                      className="text-xs border border-stone-300 rounded-full px-2 py-1"
-                    >
-                      <option value="nao_iniciado">Não iniciado</option>
-                      <option value="em_andamento">Em andamento</option>
-                      <option value="aberta">Conta aberta</option>
-                    </select>
-                    <select
-                      value={editing.etapa || "novo_lead"}
-                      onChange={(e) => handleSaveField({ etapa: e.target.value })}
-                      className="text-xs border border-stone-300 rounded-full px-2 py-1"
-                    >
-                      {PIPELINE_STAGES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-                    </select>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button onClick={() => openPrintClient(editing)} className="flex items-center gap-1 px-2.5 py-1.5 text-xs bg-white/10 hover:bg-white/20 rounded-md text-white">
+                      <Printer size={13} /> Relatório PDF
+                    </button>
+                    <button onClick={() => handleDelete(editing.id)} className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-md">
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => openPrintClient(editing)} className="flex items-center gap-1 px-2.5 py-1.5 text-xs border border-stone-300 rounded-md text-stone-600 hover:bg-stone-50">
-                    <Printer size={13} /> Relatório PDF
-                  </button>
-                  <button onClick={() => handleDelete(editing.id)} className="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-md">
-                    <Trash2 size={16} />
-                  </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <select
+                    value={editing.prioridade}
+                    onChange={(e) => handleSaveField({ prioridade: e.target.value })}
+                    className="text-xs rounded-full px-2 py-1 border-0 bg-white text-stone-700 font-medium"
+                  >
+                    <option value="quente">🔥 Quente</option>
+                    <option value="morno">🌡️ Morno</option>
+                    <option value="frio">❄️ Frio</option>
+                  </select>
+                  <select
+                    value={editing.statusConta}
+                    onChange={(e) => handleSaveField({ statusConta: e.target.value })}
+                    className="text-xs rounded-full px-2 py-1 border-0 bg-white text-stone-700 font-medium"
+                  >
+                    <option value="nao_iniciado">Não iniciado</option>
+                    <option value="em_andamento">Em andamento</option>
+                    <option value="aberta">Conta aberta</option>
+                  </select>
+                  <select
+                    value={editing.etapa || "novo_lead"}
+                    onChange={(e) => handleSaveField({ etapa: e.target.value })}
+                    className="text-xs rounded-full px-2 py-1 border-0 bg-white text-stone-700 font-medium"
+                  >
+                    {PIPELINE_STAGES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+                  </select>
+                  <div className="w-px h-4 bg-white/25 mx-1" />
+                  {TAGS_DISPONIVEIS.map((t) => {
+                    const active = (editing.tags || []).includes(t.id);
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => toggleTag(editing, t.id)}
+                        className="px-2.5 py-1 rounded-full text-xs font-medium border"
+                        style={active ? { background: t.bg, color: t.text, borderColor: t.border } : { background: "rgba(255,255,255,0.1)", color: "#fff", borderColor: "rgba(255,255,255,0.3)" }}
+                      >
+                        {t.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
+              {/* Conteúdo com rolagem própria */}
+              <div className="flex-1 overflow-y-auto p-5 md:p-7">
+            <div className="max-w-4xl space-y-4 pb-4 mx-auto">
               {/* Direcionamento do lead */}
               <Section icon={ArrowRight} title="Direcionamento do lead — para onde esse cliente está indo">
                 <div className="flex flex-wrap gap-2">
@@ -1384,23 +1414,8 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
                 </div>
               </Section>
 
-              {/* Etiquetas de alerta/status */}
-              <Section icon={Tag} title="Etiquetas de alerta e observações">
-                <div className="flex flex-wrap gap-1.5">
-                  {TAGS_DISPONIVEIS.map((t) => {
-                    const active = (editing.tags || []).includes(t.id);
-                    return (
-                      <button
-                        key={t.id}
-                        onClick={() => toggleTag(editing, t.id)}
-                        className="px-2.5 py-1 rounded-full text-xs font-medium border"
-                        style={active ? { background: t.bg, color: t.text, borderColor: t.border } : { background: "#fff", color: "#78716C", borderColor: "#D6D3D1" }}
-                      >
-                        {t.label}
-                      </button>
-                    );
-                  })}
-                </div>
+              {/* Observações */}
+              <Section icon={Tag} title="Observações">
                 <Field label="Observações gerais">
                   <textarea value={editing.observacoes || ""} onChange={(e) => handleSaveField({ observacoes: e.target.value })} rows={2} className={textareaCls} placeholder="Anotações rápidas sobre esse lead..." />
                 </Field>
@@ -1545,6 +1560,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
           </div>
         )}
       </div>
+      </>
       )}
 
       {showSettings && (
