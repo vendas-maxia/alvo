@@ -8,7 +8,7 @@ import {
   ChevronDown, Mic, ClipboardList, ExternalLink, Filter, BarChart3,
   Settings, LayoutGrid, List, Printer, ArrowRight, ArrowLeft, UserCircle,
   Landmark, DollarSign, Tag, Pencil, Briefcase, StickyNote, ThumbsDown,
-  Upload, RefreshCw
+  Upload, RefreshCw, LogOut
 } from "lucide-react";
 
 const MAXIA_LOGO_LIGHT_BG = "data:image/png;base64,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"; // logo MaxIA para uso sobre fundo claro
@@ -264,6 +264,9 @@ function toDb(c) {
     origem_carteira: c.origemCarteira || [],
     uf: c.uf || "",
     codigo_maxfio: c.codigoMaxfio || "",
+    cartao_cnpj_nome: c.cartaoCnpjNome || "",
+    cartao_cnpj_arquivo: c.cartaoCnpjArquivo || "",
+    responsavel_email: c.responsavelEmail || "",
     created_at: c.createdAt,
   };
 }
@@ -283,8 +286,8 @@ function fromDb(r) {
     email: r.email || "",
     site: r.site || "",
     redesSociais: r.redes_sociais || "",
-    socios: r.socios || [{ nome: "", participacao: "" }],
-    gestores: r.gestores || [{ nome: "", cargo: "" }],
+    socios: r.socios || [{ nome: "", participacao: "", telefone: "" }],
+    gestores: r.gestores || [{ nome: "", cargo: "", telefone: "" }],
     analiseCadastral: r.analise_cadastral || "",
     analiseCredito: r.analise_credito || "",
     analiseMercado: r.analise_mercado || "",
@@ -310,6 +313,9 @@ function fromDb(r) {
     origemCarteira: r.origem_carteira || [],
     uf: r.uf || "",
     codigoMaxfio: r.codigo_maxfio || "",
+    cartaoCnpjNome: r.cartao_cnpj_nome || "",
+    cartaoCnpjArquivo: r.cartao_cnpj_arquivo || "",
+    responsavelEmail: r.responsavel_email || "",
     createdAt: r.created_at,
   };
 }
@@ -342,8 +348,11 @@ function emptyClient() {
     statusMaxIA: "nao_iniciado",
     servicoMaxIA: "",
     obsMaxIA: "",
-    socios: [{ nome: "", participacao: "" }],
-    gestores: [{ nome: "", cargo: "" }],
+    socios: [{ nome: "", participacao: "", telefone: "" }],
+    gestores: [{ nome: "", cargo: "", telefone: "" }],
+    cartaoCnpjNome: "",
+    cartaoCnpjArquivo: "",
+    responsavelEmail: "",
     analiseCadastral: "",
     analiseCredito: "",
     analiseMercado: "",
@@ -432,7 +441,7 @@ const inputCls =
   "w-full px-3 py-2 text-sm border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-600 bg-white";
 const textareaCls = inputCls + " resize-none";
 
-function CRMWorkspace({ modo, onSwitchModo }) {
+function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
@@ -567,6 +576,7 @@ function CRMWorkspace({ modo, onSwitchModo }) {
     const hoje = new Date().toISOString().slice(0, 10);
     return clients
       .filter((c) => c.statusConta !== "aberta" && c.statusMaxIA !== "cliente_fechado") // clientes fechados (Sicredi ou MaxIA) saem da prospecção
+      .filter((c) => (currentUser?.verTodosClientes === false ? (!c.responsavelEmail || c.responsavelEmail === currentUser.email) : true))
       .filter((c) => (filtroRegiao === "Todas" ? true : c.regiao === filtroRegiao))
       .filter((c) => (filtroRamo === "Todos" ? true : c.ramo === filtroRamo))
       .filter((c) => (filtroPrioridade === "Todas" ? true : c.prioridade === filtroPrioridade))
@@ -677,6 +687,7 @@ function CRMWorkspace({ modo, onSwitchModo }) {
   function handleNew() {
     const c = emptyClient();
     if (modo === "sicredi" || modo === "maxia") c.caminhos = [modo];
+    if (currentUser?.email) c.responsavelEmail = currentUser.email;
     const next = [c, ...clients];
     setEditing(c);
     setSelectedId(c.id);
@@ -953,6 +964,14 @@ function CRMWorkspace({ modo, onSwitchModo }) {
             >
               <Briefcase size={13} /> Clientes ({convertidosCount})
             </button>
+            {currentUser?.papel === "admin" && (
+              <button
+                onClick={() => setViewMode("usuarios")}
+                className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded ${viewMode === "usuarios" ? (modo === "maxia" ? "bg-white text-violet-950" : "bg-white text-emerald-900") : (modo === "maxia" ? "text-violet-100" : "text-emerald-100")}`}
+              >
+                <Users size={13} /> Usuários
+              </button>
+            )}
           </div>
           <button
             onClick={() => setShowSettings(true)}
@@ -969,6 +988,15 @@ function CRMWorkspace({ modo, onSwitchModo }) {
           >
             <LayoutGrid size={14} /> Trocar CRM
           </button>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className={`flex items-center gap-1.5 text-xs ${modo === "maxia" ? "bg-violet-900 hover:bg-violet-800" : "bg-emerald-800 hover:bg-emerald-700"} px-3 py-2 rounded-md`}
+              title="Sair"
+            >
+              <LogOut size={14} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -1031,6 +1059,8 @@ function CRMWorkspace({ modo, onSwitchModo }) {
         />
       ) : viewMode === "clientes" ? (
         <ClientesView clients={clientesAbertos} onSelect={(c) => { setSelectedId(c.id); setViewMode("lista"); }} search={search} setSearch={setSearch} />
+      ) : viewMode === "usuarios" ? (
+        <UsuariosView currentUser={currentUser} />
       ) : (
       <div className="flex flex-1 min-h-0 no-print">
         {/* Área de tabela em tela cheia */}
@@ -1355,7 +1385,7 @@ function CRMWorkspace({ modo, onSwitchModo }) {
               </Section>
 
               {/* Etiquetas de alerta/status */}
-              <Section icon={Tag} title="Etiquetas de alerta e status">
+              <Section icon={Tag} title="Etiquetas de alerta e observações">
                 <div className="flex flex-wrap gap-1.5">
                   {TAGS_DISPONIVEIS.map((t) => {
                     const active = (editing.tags || []).includes(t.id);
@@ -1371,6 +1401,9 @@ function CRMWorkspace({ modo, onSwitchModo }) {
                     );
                   })}
                 </div>
+                <Field label="Observações gerais">
+                  <textarea value={editing.observacoes || ""} onChange={(e) => handleSaveField({ observacoes: e.target.value })} rows={2} className={textareaCls} placeholder="Anotações rápidas sobre esse lead..." />
+                </Field>
               </Section>
 
               {/* Faturamento e dados bancários */}
@@ -1388,59 +1421,63 @@ function CRMWorkspace({ modo, onSwitchModo }) {
 
               {/* Contrato social */}
               <Section icon={Users} title="Contrato social — sócios, participação e gestores">
+                <Field label="Cartão CNPJ (anexo)">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <label className="flex items-center gap-1.5 text-xs border border-stone-300 rounded-md px-3 py-1.5 cursor-pointer hover:bg-stone-50 text-stone-600">
+                      <Upload size={13} /> {editing.cartaoCnpjNome ? "Trocar arquivo" : "Anexar cartão CNPJ"}
+                      <input
+                        type="file"
+                        accept=".pdf,.png,.jpg,.jpeg"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = () => handleSaveField({ cartaoCnpjNome: file.name, cartaoCnpjArquivo: reader.result });
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                    </label>
+                    {editing.cartaoCnpjNome && (
+                      <a href={editing.cartaoCnpjArquivo} download={editing.cartaoCnpjNome} className="text-xs text-emerald-700 flex items-center gap-1 hover:underline">
+                        <FileText size={13} /> {editing.cartaoCnpjNome}
+                      </a>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-stone-400 mt-1">Leitura automática dos dados via IA ainda não está ativa nessa versão — o anexo fica salvo para consulta manual.</p>
+                </Field>
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-medium text-stone-500">Sócios e participação societária</span>
-                    <button onClick={() => addArrayItem("socios", { nome: "", participacao: "" })} className="text-xs text-emerald-700 font-medium flex items-center gap-1">
+                    <button onClick={() => addArrayItem("socios", { nome: "", participacao: "", telefone: "" })} className="text-xs text-emerald-700 font-medium flex items-center gap-1">
                       <Plus size={12} /> adicionar sócio
                     </button>
                   </div>
                   {editing.socios.map((s, i) => (
                     <div key={i} className="flex gap-2 mb-1.5">
                       <input value={s.nome} onChange={(e) => updateArrayField("socios", i, "nome", e.target.value)} placeholder="Nome do sócio" className={inputCls + " flex-1"} />
-                      <input value={s.participacao} onChange={(e) => updateArrayField("socios", i, "participacao", e.target.value)} placeholder="% participação" className={inputCls + " w-32"} />
+                      <input value={s.participacao} onChange={(e) => updateArrayField("socios", i, "participacao", e.target.value)} placeholder="% participação" className={inputCls + " w-28"} />
+                      <input value={s.telefone || ""} onChange={(e) => updateArrayField("socios", i, "telefone", e.target.value)} placeholder="Telefone/WhatsApp" className={inputCls + " w-40"} />
                       <button onClick={() => removeArrayItem("socios", i)} className="text-stone-400 hover:text-red-600 px-1"><X size={15} /></button>
                     </div>
                   ))}
                 </div>
                 <div className="pt-2">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-medium text-stone-500">Gestores</span>
-                    <button onClick={() => addArrayItem("gestores", { nome: "", cargo: "" })} className="text-xs text-emerald-700 font-medium flex items-center gap-1">
+                    <span className="text-xs font-medium text-stone-500">Gestores e contatos vinculados (ex: financeiro, administrativo)</span>
+                    <button onClick={() => addArrayItem("gestores", { nome: "", cargo: "", telefone: "" })} className="text-xs text-emerald-700 font-medium flex items-center gap-1">
                       <Plus size={12} /> adicionar gestor
                     </button>
                   </div>
                   {editing.gestores.map((g, i) => (
                     <div key={i} className="flex gap-2 mb-1.5">
-                      <input value={g.nome} onChange={(e) => updateArrayField("gestores", i, "nome", e.target.value)} placeholder="Nome do gestor" className={inputCls + " flex-1"} />
-                      <input value={g.cargo} onChange={(e) => updateArrayField("gestores", i, "cargo", e.target.value)} placeholder="Cargo" className={inputCls + " w-40"} />
+                      <input value={g.nome} onChange={(e) => updateArrayField("gestores", i, "nome", e.target.value)} placeholder="Nome" className={inputCls + " flex-1"} />
+                      <input value={g.cargo} onChange={(e) => updateArrayField("gestores", i, "cargo", e.target.value)} placeholder="Cargo (ex: Financeiro)" className={inputCls + " w-40"} />
+                      <input value={g.telefone || ""} onChange={(e) => updateArrayField("gestores", i, "telefone", e.target.value)} placeholder="Telefone/WhatsApp" className={inputCls + " w-40"} />
                       <button onClick={() => removeArrayItem("gestores", i)} className="text-stone-400 hover:text-red-600 px-1"><X size={15} /></button>
                     </div>
                   ))}
                 </div>
-              </Section>
-
-              {/* Análises */}
-              <Section icon={TrendingUp} title="Análise cadastral, de crédito e de mercado">
-                <Field label="Análise cadastral">
-                  <textarea value={editing.analiseCadastral} onChange={(e) => handleSaveField({ analiseCadastral: e.target.value })} rows={2} className={textareaCls} placeholder="Situação cadastral, pendências, restrições..." />
-                </Field>
-                <Field label="Análise de crédito">
-                  <textarea value={editing.analiseCredito} onChange={(e) => handleSaveField({ analiseCredito: e.target.value })} rows={2} className={textareaCls} placeholder="Score, histórico, capacidade de pagamento..." />
-                </Field>
-                <Field label="Prévia análise de mercado em que atua">
-                  <textarea value={editing.analiseMercado} onChange={(e) => handleSaveField({ analiseMercado: e.target.value })} rows={2} className={textareaCls} placeholder="Porte, concorrência, potencial de crescimento no setor..." />
-                </Field>
-              </Section>
-
-              {/* Abordagem */}
-              <Section icon={ClipboardList} title="Prioridade e sugestão de abordagem">
-                <Field label="Sugestão de abordagem comercial">
-                  <textarea value={editing.abordagemSugerida} onChange={(e) => handleSaveField({ abordagemSugerida: e.target.value })} rows={3} className={textareaCls} placeholder="Ex: abordar pelo sócio-administrador via WhatsApp, oferecer linha de capital de giro..." />
-                </Field>
-                <Field label="Observações gerais">
-                  <textarea value={editing.observacoes || ""} onChange={(e) => handleSaveField({ observacoes: e.target.value })} rows={2} className={textareaCls} placeholder="Anotações rápidas sobre esse lead..." />
-                </Field>
               </Section>
 
               {/* Reuniões */}
@@ -1467,17 +1504,6 @@ function CRMWorkspace({ modo, onSwitchModo }) {
                     ))}
                   </div>
                 )}
-              </Section>
-
-              {/* Diagnóstico */}
-              <Section icon={Link2} title="Ferramentas de diagnóstico" defaultOpen={false}>
-                <div className="grid grid-cols-2 gap-2">
-                  {FERRAMENTAS_DIAGNOSTICO.map((f) => (
-                    <a key={f.nome} href={f.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs px-3 py-2 border border-stone-200 rounded-md hover:bg-stone-50 text-emerald-800">
-                      <ExternalLink size={13} /> {f.nome}
-                    </a>
-                  ))}
-                </div>
               </Section>
 
               {/* Visitas */}
@@ -2072,7 +2098,9 @@ function PrintRow({ label, value }) {
 
 const MODO_STORAGE_KEY = "sicredi-hauer-crm-modo";
 
-function ModoMenu({ onChoose }) {
+function ModoMenu({ onChoose, currentUser }) {
+  const podeSicredi = currentUser ? currentUser.acessoSicredi !== false : true;
+  const podeMaxia = currentUser ? currentUser.acessoMaxia !== false : true;
   return (
     <div
       style={{
@@ -2102,6 +2130,7 @@ function ModoMenu({ onChoose }) {
         <p className="text-sm text-stone-300">Os dois trabalham com a mesma base de clientes — só mudam o funil e os campos em destaque.</p>
       </div>
       <div className="flex flex-col md:flex-row gap-5 w-full max-w-3xl">
+        {podeSicredi && (
         <button
           onClick={() => onChoose("sicredi")}
           className="flex-1 bg-emerald-900/90 hover:bg-emerald-800 backdrop-blur text-white rounded-xl p-6 flex flex-col items-center gap-3 transition-colors text-left border border-emerald-400/30 shadow-2xl"
@@ -2112,6 +2141,8 @@ function ModoMenu({ onChoose }) {
             <div className="text-xs text-emerald-200 mt-1">Prospecção e abertura de conta — Regional Hauer</div>
           </div>
         </button>
+        )}
+        {podeMaxia && (
         <button
           onClick={() => onChoose("maxia")}
           className="flex-1 bg-violet-950/90 hover:bg-violet-900 backdrop-blur text-white rounded-xl p-6 flex flex-col items-center gap-3 transition-colors text-left border border-violet-400/30 shadow-2xl"
@@ -2122,19 +2153,26 @@ function ModoMenu({ onChoose }) {
             <div className="text-xs text-violet-200 mt-1">Funil de diagnóstico e fechamento — Gestão de Dados</div>
           </div>
         </button>
+        )}
+        {!podeSicredi && !podeMaxia && (
+          <p className="text-sm text-white/70">Seu usuário ainda não tem acesso liberado a nenhuma base. Peça para um administrador liberar na aba Usuários.</p>
+        )}
       </div>
     </div>
   );
 }
 
-export default function CRMApp() {
+function CRMApp({ currentUser, onLogout }) {
   const [modo, setModo] = useState(null);
   const [loadingModo, setLoadingModo] = useState(true);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(MODO_STORAGE_KEY);
-      if (saved === "sicredi" || saved === "maxia") setModo(saved);
+      const podeSicredi = currentUser ? currentUser.acessoSicredi !== false : true;
+      const podeMaxia = currentUser ? currentUser.acessoMaxia !== false : true;
+      if (saved === "sicredi" && podeSicredi) setModo(saved);
+      else if (saved === "maxia" && podeMaxia) setModo(saved);
     } catch (e) {
       // sem preferência salva ainda
     } finally {
@@ -2161,8 +2199,246 @@ export default function CRMApp() {
   }
 
   if (!modo) {
-    return <ModoMenu onChoose={escolherModo} />;
+    return <ModoMenu onChoose={escolherModo} currentUser={currentUser} />;
   }
 
-  return <CRMWorkspace modo={modo} onSwitchModo={trocarModo} />;
+  return <CRMWorkspace modo={modo} onSwitchModo={trocarModo} currentUser={currentUser} onLogout={onLogout} />;
 }
+
+function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setErro("");
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    setLoading(false);
+    if (error) {
+      setErro("E-mail ou senha inválidos.");
+    }
+  }
+
+  return (
+    <div style={{ minHeight: "100vh" }} className="flex items-center justify-center bg-stone-100 p-4">
+      <form onSubmit={handleLogin} className="bg-white border border-stone-200 rounded-xl shadow-lg p-8 w-full max-w-sm space-y-4">
+        <div className="text-center mb-2">
+          <h1 className="text-lg font-bold text-stone-800">CRM · Prospecção Sicredi &amp; MaxIA</h1>
+          <p className="text-xs text-stone-400 mt-1">Entre com seu e-mail e senha</p>
+        </div>
+        <div>
+          <label className="text-xs font-medium text-stone-500">E-mail</label>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full mt-1 border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-stone-500">Senha</label>
+          <input type="password" required value={senha} onChange={(e) => setSenha(e.target.value)} className="w-full mt-1 border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+        {erro && <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">{erro}</div>}
+        <button type="submit" disabled={loading} className="w-full bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-medium py-2.5 rounded-md disabled:opacity-50">
+          {loading ? "Entrando..." : "Entrar"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function SemPermissaoScreen({ email, onLogout }) {
+  return (
+    <div style={{ minHeight: "100vh" }} className="flex flex-col items-center justify-center bg-stone-100 gap-3 p-4 text-center">
+      <Building2 size={32} className="text-stone-300" />
+      <p className="text-sm text-stone-600 max-w-sm">
+        Seu e-mail (<span className="font-medium">{email}</span>) ainda não tem permissão de acesso liberada nesse CRM.
+        Peça para um administrador te cadastrar na aba <span className="font-medium">Usuários</span>.
+      </p>
+      <button onClick={onLogout} className="text-xs text-stone-400 hover:text-stone-600 underline flex items-center gap-1">
+        <LogOut size={12} /> Sair
+      </button>
+    </div>
+  );
+}
+
+function UsuariosView({ currentUser }) {
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [novo, setNovo] = useState({ email: "", nome: "", papel: "vendedor", acesso_sicredi: true, acesso_maxia: true, ver_todos_clientes: true });
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState("");
+
+  async function carregar() {
+    setLoading(true);
+    const { data, error } = await supabase.from("crm_usuarios").select("*").order("created_at", { ascending: true });
+    if (!error) setUsuarios(data || []);
+    setLoading(false);
+  }
+
+  useEffect(() => { carregar(); }, []);
+
+  async function handleAdd(e) {
+    e.preventDefault();
+    if (!novo.email.trim()) return;
+    setSalvando(true);
+    setErro("");
+    const { error } = await supabase.from("crm_usuarios").insert([novo]);
+    setSalvando(false);
+    if (error) {
+      setErro(error.message);
+      return;
+    }
+    setNovo({ email: "", nome: "", papel: "vendedor", acesso_sicredi: true, acesso_maxia: true, ver_todos_clientes: true });
+    carregar();
+  }
+
+  async function handleUpdate(u, patch) {
+    setUsuarios((prev) => prev.map((x) => (x.id === u.id ? { ...x, ...patch } : x)));
+    await supabase.from("crm_usuarios").update(patch).eq("id", u.id);
+  }
+
+  async function handleDelete(u) {
+    if (!window.confirm(`Remover o acesso de ${u.email}?`)) return;
+    setUsuarios((prev) => prev.filter((x) => x.id !== u.id));
+    await supabase.from("crm_usuarios").delete().eq("id", u.id);
+  }
+
+  return (
+    <div className="flex-1 overflow-y-auto p-5 bg-stone-100 space-y-4">
+      <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-md px-3 py-2 max-w-3xl">
+        Aqui você cadastra só a <span className="font-semibold">permissão</span> de cada pessoa. O <span className="font-semibold">login</span>
+        (e-mail + senha) precisa ser criado à parte, no painel do Supabase, em <span className="font-medium">Authentication → Users → Add user</span>,
+        usando o mesmo e-mail cadastrado aqui.
+      </div>
+
+      <form onSubmit={handleAdd} className="bg-white border border-stone-300 shadow-sm rounded-lg p-4 max-w-3xl space-y-3">
+        <h3 className="text-sm font-bold text-stone-800">Adicionar usuário</h3>
+        <div className="grid grid-cols-2 gap-2">
+          <input required type="email" value={novo.email} onChange={(e) => setNovo({ ...novo, email: e.target.value })} placeholder="E-mail" className="text-sm border border-stone-300 rounded-md px-3 py-2" />
+          <input value={novo.nome} onChange={(e) => setNovo({ ...novo, nome: e.target.value })} placeholder="Nome" className="text-sm border border-stone-300 rounded-md px-3 py-2" />
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <label className="flex items-center gap-1.5 text-xs text-stone-600">
+            <input type="checkbox" checked={novo.papel === "admin"} onChange={(e) => setNovo({ ...novo, papel: e.target.checked ? "admin" : "vendedor" })} /> Administrador
+          </label>
+          <label className="flex items-center gap-1.5 text-xs text-stone-600">
+            <input type="checkbox" checked={novo.acesso_sicredi} onChange={(e) => setNovo({ ...novo, acesso_sicredi: e.target.checked })} /> Acessa CRM Sicredi
+          </label>
+          <label className="flex items-center gap-1.5 text-xs text-stone-600">
+            <input type="checkbox" checked={novo.acesso_maxia} onChange={(e) => setNovo({ ...novo, acesso_maxia: e.target.checked })} /> Acessa CRM MaxIA
+          </label>
+          <label className="flex items-center gap-1.5 text-xs text-stone-600">
+            <input type="checkbox" checked={novo.ver_todos_clientes} onChange={(e) => setNovo({ ...novo, ver_todos_clientes: e.target.checked })} /> Vê todos os clientes (não só os próprios)
+          </label>
+        </div>
+        {erro && <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">{erro}</div>}
+        <button disabled={salvando} type="submit" className="flex items-center gap-1.5 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-medium px-3 py-1.5 rounded-md disabled:opacity-50">
+          <Plus size={13} /> Adicionar
+        </button>
+      </form>
+
+      <div className="bg-white border border-stone-300 shadow-sm rounded-lg overflow-hidden max-w-4xl">
+        <table className="w-full text-xs">
+          <thead className="bg-stone-100 border-b-2 border-stone-300">
+            <tr className="text-left text-[10px] uppercase tracking-wide text-stone-500 font-bold">
+              <th className="px-3 py-2">E-mail</th>
+              <th className="px-3 py-2">Nome</th>
+              <th className="px-3 py-2">Admin</th>
+              <th className="px-3 py-2">Sicredi</th>
+              <th className="px-3 py-2">MaxIA</th>
+              <th className="px-3 py-2">Vê todos</th>
+              <th className="px-3 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading && (
+              <tr><td colSpan={7} className="px-3 py-4 text-center text-stone-400">Carregando…</td></tr>
+            )}
+            {!loading && usuarios.length === 0 && (
+              <tr><td colSpan={7} className="px-3 py-4 text-center text-stone-400">Nenhum usuário cadastrado ainda.</td></tr>
+            )}
+            {usuarios.map((u) => (
+              <tr key={u.id} className="border-b border-stone-100">
+                <td className="px-3 py-2 font-medium text-stone-800">{u.email}</td>
+                <td className="px-3 py-2 text-stone-600">{u.nome}</td>
+                <td className="px-3 py-2">
+                  <input type="checkbox" checked={u.papel === "admin"} onChange={(e) => handleUpdate(u, { papel: e.target.checked ? "admin" : "vendedor" })} />
+                </td>
+                <td className="px-3 py-2">
+                  <input type="checkbox" checked={u.acesso_sicredi} onChange={(e) => handleUpdate(u, { acesso_sicredi: e.target.checked })} />
+                </td>
+                <td className="px-3 py-2">
+                  <input type="checkbox" checked={u.acesso_maxia} onChange={(e) => handleUpdate(u, { acesso_maxia: e.target.checked })} />
+                </td>
+                <td className="px-3 py-2">
+                  <input type="checkbox" checked={u.ver_todos_clientes} onChange={(e) => handleUpdate(u, { ver_todos_clientes: e.target.checked })} />
+                </td>
+                <td className="px-3 py-2 text-right">
+                  <button onClick={() => handleDelete(u)} title="Remover" className="text-stone-400 hover:text-red-600"><Trash2 size={14} /></button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function AuthGate() {
+  const [session, setSession] = useState(undefined); // undefined = carregando, null = deslogado
+  const [perfil, setPerfil] = useState(undefined); // undefined = carregando, null = sem permissão
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session || null));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!session) {
+      setPerfil(session === null ? null : undefined);
+      return;
+    }
+    let ativo = true;
+    setPerfil(undefined);
+    supabase
+      .from("crm_usuarios")
+      .select("*")
+      .eq("email", session.user.email)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (ativo) setPerfil(data || null);
+      });
+    return () => { ativo = false; };
+  }, [session]);
+
+  if (session === undefined) {
+    return <div style={{ minHeight: "100vh" }} className="flex items-center justify-center text-stone-400 text-sm">Carregando…</div>;
+  }
+  if (!session) {
+    return <LoginScreen />;
+  }
+  if (perfil === undefined) {
+    return <div style={{ minHeight: "100vh" }} className="flex items-center justify-center text-stone-400 text-sm">Carregando…</div>;
+  }
+  if (!perfil) {
+    return <SemPermissaoScreen email={session.user.email} onLogout={() => supabase.auth.signOut()} />;
+  }
+
+  return (
+    <CRMApp
+      currentUser={{
+        email: perfil.email,
+        nome: perfil.nome,
+        papel: perfil.papel,
+        acessoSicredi: perfil.acesso_sicredi,
+        acessoMaxia: perfil.acesso_maxia,
+        verTodosClientes: perfil.ver_todos_clientes,
+      }}
+      onLogout={() => supabase.auth.signOut()}
+    />
+  );
+}
+
+export default AuthGate;
