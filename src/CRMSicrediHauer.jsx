@@ -2385,6 +2385,12 @@ function UsuariosView({ currentUser }) {
   );
 }
 
+// Enquanto os cadastros de usuário/permissão não estiverem prontos no Supabase,
+// deixe REQUIRE_LOGIN em false — o CRM abre direto, sem pedir login, do jeito que estava antes.
+// Quando terminar os passos (migração SQL + criar os logins em Authentication > Users),
+// troque para true e o login/permissões passam a valer.
+const REQUIRE_LOGIN = false;
+
 function AuthGate() {
   const [session, setSession] = useState(undefined); // undefined = carregando, null = deslogado
   const [perfil, setPerfil] = useState(undefined); // undefined = carregando, null = sem permissão
@@ -2441,4 +2447,9 @@ function AuthGate() {
   );
 }
 
-export default AuthGate;
+export default function RootApp() {
+  if (!REQUIRE_LOGIN) {
+    return <CRMApp currentUser={null} onLogout={undefined} />;
+  }
+  return <AuthGate />;
+}
