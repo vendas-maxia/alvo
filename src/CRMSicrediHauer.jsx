@@ -1036,40 +1036,49 @@ function CRMWorkspace({ modo, onSwitchModo }) {
         {/* Área de tabela em tela cheia */}
         <div className="flex-[2] min-w-0 border-r border-stone-200 bg-white flex flex-col">
           <div className="p-3 border-b border-stone-200 space-y-2">
-            <div className="grid gap-2" style={{ gridTemplateColumns: "minmax(180px,2fr) repeat(5, minmax(110px,1fr))" }}>
-              <div className="relative">
-                <Search size={14} className="absolute left-2.5 top-2.5 text-stone-400" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Buscar por nome, CNPJ, ramo..."
-                  className="w-full pl-8 pr-3 py-2 text-xs border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
+            <div className="flex items-end gap-2">
+              <div className="grid gap-2 flex-1" style={{ gridTemplateColumns: "minmax(180px,2fr) repeat(5, minmax(110px,1fr))" }}>
+                <div className="relative">
+                  <Search size={14} className="absolute left-2.5 top-2.5 text-stone-400" />
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Buscar por nome, CNPJ, ramo..."
+                    className="w-full pl-8 pr-3 py-2 text-xs border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <select value={filtroRegiao} onChange={(e) => setFiltroRegiao(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                  <option>Todas</option>
+                  {regioesDisponiveis.map((r) => <option key={r}>{r}</option>)}
+                </select>
+                <select value={filtroRamo} onChange={(e) => setFiltroRamo(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                  <option>Todos</option>
+                  {RAMOS.map((r) => <option key={r}>{r}</option>)}
+                </select>
+                <select value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                  <option>Todas</option>
+                  <option value="quente">🔥 Quente</option>
+                  <option value="morno">🌡️ Morno</option>
+                  <option value="frio">❄️ Frio</option>
+                </select>
+                <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                  <option>Todos</option>
+                  <option value="nao_iniciado">Não iniciado</option>
+                  <option value="em_andamento">Em andamento</option>
+                  <option value="aberta">Conta aberta</option>
+                </select>
+                <select value={filtroCaminho} onChange={(e) => setFiltroCaminho(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
+                  <option value="Todos">Todos os caminhos</option>
+                  {CAMINHOS_LEAD.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+                </select>
               </div>
-              <select value={filtroRegiao} onChange={(e) => setFiltroRegiao(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
-                <option>Todas</option>
-                {regioesDisponiveis.map((r) => <option key={r}>{r}</option>)}
-              </select>
-              <select value={filtroRamo} onChange={(e) => setFiltroRamo(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
-                <option>Todos</option>
-                {RAMOS.map((r) => <option key={r}>{r}</option>)}
-              </select>
-              <select value={filtroPrioridade} onChange={(e) => setFiltroPrioridade(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
-                <option>Todas</option>
-                <option value="quente">🔥 Quente</option>
-                <option value="morno">🌡️ Morno</option>
-                <option value="frio">❄️ Frio</option>
-              </select>
-              <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
-                <option>Todos</option>
-                <option value="nao_iniciado">Não iniciado</option>
-                <option value="em_andamento">Em andamento</option>
-                <option value="aberta">Conta aberta</option>
-              </select>
-              <select value={filtroCaminho} onChange={(e) => setFiltroCaminho(e.target.value)} className="text-xs border border-stone-300 rounded-md px-2 py-2">
-                <option value="Todos">Todos os caminhos</option>
-                {CAMINHOS_LEAD.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
-              </select>
+              <button
+                onClick={() => { setSearch(""); setFiltroRegiao("Todas"); setFiltroRamo("Todos"); setFiltroPrioridade("Todas"); setFiltroStatus("Todos"); setFiltroCaminho("Todos"); setQuickFilter(null); }}
+                className="flex-shrink-0 flex items-center gap-1 text-xs border border-stone-300 rounded-md px-3 py-2 text-stone-500 hover:bg-stone-50 hover:text-stone-700"
+                title="Limpar todos os filtros"
+              >
+                <X size={13} /> Limpar
+              </button>
             </div>
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <div className="flex items-center gap-2 flex-wrap">
