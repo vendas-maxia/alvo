@@ -460,12 +460,21 @@ function CRMWorkspace({ modo, onSwitchModo }) {
   useEffect(() => {
     (async () => {
       try {
-        const { data, error } = await supabase
-          .from(CLIENTES_TABLE)
-          .select("*")
-          .order("created_at", { ascending: false });
-        if (error) throw error;
-        setClients((data || []).map(fromDb));
+        const PAGE = 1000;
+        let all = [];
+        let from = 0;
+        while (true) {
+          const { data, error } = await supabase
+            .from(CLIENTES_TABLE)
+            .select("*")
+            .order("created_at", { ascending: false })
+            .range(from, from + PAGE - 1);
+          if (error) throw error;
+          all = all.concat(data || []);
+          if (!data || data.length < PAGE) break;
+          from += PAGE;
+        }
+        setClients(all.map(fromDb));
       } catch (e) {
         console.error("Falha ao carregar clientes do Supabase", e);
         setClients([]);
