@@ -442,7 +442,7 @@ function CRMWorkspace({ modo, onSwitchModo }) {
   const [filtroRamo, setFiltroRamo] = useState("Todos");
   const [filtroPrioridade, setFiltroPrioridade] = useState("Todas");
   const [filtroStatus, setFiltroStatus] = useState("Todos");
-  const [filtroCaminho, setFiltroCaminho] = useState(modo || "Todos");
+  const [filtroCaminho, setFiltroCaminho] = useState("Todos");
   const [novaReuniao, setNovaReuniao] = useState({ transcricao: "", resumo: "" });
   const [novoEvento, setNovoEvento] = useState("");
   const [saving, setSaving] = useState(false);
