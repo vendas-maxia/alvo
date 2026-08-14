@@ -403,12 +403,12 @@ function StatusBadge({ value }) {
 function Section({ icon: Icon, title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border border-stone-200 rounded-lg overflow-hidden bg-white">
+    <div className="border border-stone-300 rounded-lg overflow-hidden bg-white shadow-sm">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-stone-50 hover:bg-stone-100 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 bg-stone-100 hover:bg-stone-200 transition-colors border-b border-stone-200"
       >
-        <span className="flex items-center gap-2 text-sm font-semibold text-stone-800">
+        <span className="flex items-center gap-2 text-sm font-bold text-stone-800">
           <Icon size={16} className="text-emerald-700" />
           {title}
         </span>
@@ -1034,7 +1034,7 @@ function CRMWorkspace({ modo, onSwitchModo }) {
       ) : (
       <div className="flex flex-1 min-h-0 no-print">
         {/* Área de tabela em tela cheia */}
-        <div className="flex-[2] min-w-0 border-r border-stone-200 bg-white flex flex-col">
+        <div className="flex-1 min-w-0 bg-white flex flex-col">
           <div className="p-3 border-b border-stone-200 space-y-2">
             <div className="flex items-end gap-2">
               <div className="grid gap-2 flex-1" style={{ gridTemplateColumns: "minmax(180px,2fr) repeat(5, minmax(110px,1fr))" }}>
@@ -1123,8 +1123,8 @@ function CRMWorkspace({ modo, onSwitchModo }) {
               <div className="p-6 text-center text-sm text-stone-400">Nenhum cliente encontrado.</div>
             ) : (
               <table className="w-full text-xs border-collapse">
-                <thead className="sticky top-0 bg-stone-50 border-b border-stone-200 z-10">
-                  <tr className="text-left text-[10px] uppercase tracking-wide text-stone-400">
+                <thead className="sticky top-0 bg-stone-100 border-b-2 border-stone-300 z-10 shadow-sm">
+                  <tr className="text-left text-[10px] uppercase tracking-wide text-stone-500 font-bold">
                     <th className="px-3 py-2 font-medium">Cliente</th>
                     <th className="px-3 py-2 font-medium">Região</th>
                     <th className="px-3 py-2 font-medium">Ramo</th>
@@ -1201,15 +1201,22 @@ function CRMWorkspace({ modo, onSwitchModo }) {
           </div>
         </div>
 
-        {/* Detail panel */}
-        <div className="flex-1 overflow-y-auto p-5">
-          {!editing ? (
-            <div className="h-full flex flex-col items-center justify-center text-stone-400 gap-2">
-              <Building2 size={36} />
-              <p className="text-sm">Selecione um cliente na lista ou cadastre um novo cliente potencial.</p>
-            </div>
-          ) : (
-            <div className="max-w-4xl space-y-4 pb-10">
+        {/* Painel de detalhe/edição — sobreposto em quase tela cheia */}
+        {editing && (
+          <div
+            className="fixed inset-0 z-40 bg-stone-900/50 flex items-start justify-center p-3 md:p-6 overflow-y-auto no-print"
+            onClick={(e) => { if (e.target === e.currentTarget) setSelectedId(null); }}
+          >
+            <div className="bg-stone-100 rounded-xl shadow-2xl w-full max-w-6xl my-2 relative">
+              <button
+                onClick={() => setSelectedId(null)}
+                title="Fechar"
+                className="absolute -top-3 -right-3 z-10 bg-white border border-stone-300 shadow-md rounded-full p-2 hover:bg-stone-50 text-stone-500 hover:text-stone-800"
+              >
+                <X size={18} />
+              </button>
+              <div className="p-5 md:p-7">
+            <div className="max-w-4xl space-y-4 pb-4 mx-auto">
               {/* Header */}
               <div className="bg-white border border-stone-200 rounded-lg p-4 flex items-start justify-between gap-4">
                 <div className="flex-1 space-y-2">
@@ -1507,8 +1514,10 @@ function CRMWorkspace({ modo, onSwitchModo }) {
                 </div>
               </Section>
             </div>
-          )}
-        </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       )}
 
@@ -1778,7 +1787,7 @@ function ClientesView({ clients, onSelect, search, setSearch }) {
       ) : (
         <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
           {clients.map((c) => (
-            <div key={c.id} onClick={() => onSelect(c)} className="bg-white border border-stone-200 rounded-lg p-3 cursor-pointer hover:border-emerald-400">
+            <div key={c.id} onClick={() => onSelect(c)} className="bg-white border border-stone-300 shadow-sm rounded-lg p-3 cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all">
               <div className="flex items-start justify-between gap-2">
                 <span className="text-sm font-medium text-stone-800">{c.nome}</span>
                 <div className="flex flex-col items-end gap-1">
