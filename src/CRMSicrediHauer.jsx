@@ -409,16 +409,18 @@ function StatusBadge({ value }) {
   );
 }
 
-function Section({ icon: Icon, title, children, defaultOpen = true }) {
+function Section({ icon: Icon, title, children, defaultOpen = true, color }) {
   const [open, setOpen] = useState(defaultOpen);
+  const c = color || { border: "#A7F3D0", bg: "#ECFDF5", icon: "#047857" };
   return (
-    <div className="border border-stone-300 rounded-lg overflow-hidden bg-white shadow-sm">
+    <div className="rounded-lg overflow-hidden bg-white shadow-sm border-l-4" style={{ borderLeftColor: c.border, borderTop: "1px solid #E7E5E4", borderRight: "1px solid #E7E5E4", borderBottom: "1px solid #E7E5E4" }}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-stone-100 hover:bg-stone-200 transition-colors border-b border-stone-200"
+        className="w-full flex items-center justify-between px-4 py-3 hover:brightness-95 transition-all border-b border-stone-200"
+        style={{ background: c.bg }}
       >
         <span className="flex items-center gap-2 text-sm font-bold text-stone-800">
-          <Icon size={16} className="text-emerald-700" />
+          <Icon size={16} style={{ color: c.icon }} />
           {title}
         </span>
         {open ? <ChevronDown size={16} className="text-stone-400" /> : <ChevronRight size={16} className="text-stone-400" />}
@@ -1251,7 +1253,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
             className="fixed inset-0 z-40 bg-stone-900/50 flex items-center justify-center p-3 md:p-6 no-print"
             onClick={(e) => { if (e.target === e.currentTarget) setSelectedId(null); }}
           >
-            <div style={{ width: "90vw", maxWidth: 1500, height: "88vh" }} className="bg-stone-100 rounded-xl shadow-2xl relative flex flex-col overflow-hidden">
+            <div style={{ width: "95vw", maxWidth: 1800, height: "95vh" }} className="bg-stone-100 rounded-xl shadow-2xl relative flex flex-col overflow-hidden">
               <button
                 onClick={() => setSelectedId(null)}
                 title="Fechar"
@@ -1325,7 +1327,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               <div className="flex-1 overflow-y-auto p-5 md:p-7">
             <div className="max-w-4xl space-y-4 pb-4 mx-auto">
               {/* Direcionamento do lead */}
-              <Section icon={ArrowRight} title="Direcionamento do lead — para onde esse cliente está indo">
+              <Section icon={ArrowRight} title="Direcionamento do lead — para onde esse cliente está indo" color={{ border: "#FDE68A", bg: "#FFFBEB", icon: "#B45309" }}>
                 <div className="flex flex-wrap gap-2">
                   {CAMINHOS_LEAD.map((cam) => {
                     const active = (editing.caminhos || []).includes(cam.id);
@@ -1370,7 +1372,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               </Section>
 
               {/* Dados gerais */}
-              <Section icon={Building2} title="Dados gerais e CNPJ">
+              <Section icon={Building2} title="Dados gerais e CNPJ" color={{ border: "#6EE7B7", bg: "#ECFDF5", icon: "#047857" }}>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="CNPJ">
                     <input value={editing.cnpj} onChange={(e) => handleSaveField({ cnpj: e.target.value })} className={inputCls} placeholder="00.000.000/0000-00" />
@@ -1404,7 +1406,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               </Section>
 
               {/* Contato */}
-              <Section icon={Phone} title="Contato e presença digital">
+              <Section icon={Phone} title="Contato e presença digital" color={{ border: "#5EEAD4", bg: "#F0FDFA", icon: "#0F766E" }}>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Telefone"><input value={editing.telefone} onChange={(e) => handleSaveField({ telefone: e.target.value })} className={inputCls} placeholder="(41) 0000-0000" /></Field>
                   <Field label="WhatsApp"><input value={editing.whatsapp} onChange={(e) => handleSaveField({ whatsapp: e.target.value })} className={inputCls} placeholder="(41) 90000-0000" /></Field>
@@ -1415,14 +1417,14 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               </Section>
 
               {/* Observações */}
-              <Section icon={Tag} title="Observações">
+              <Section icon={Tag} title="Observações" color={{ border: "#86EFAC", bg: "#F0FDF4", icon: "#15803D" }}>
                 <Field label="Observações gerais">
                   <textarea value={editing.observacoes || ""} onChange={(e) => handleSaveField({ observacoes: e.target.value })} rows={2} className={textareaCls} placeholder="Anotações rápidas sobre esse lead..." />
                 </Field>
               </Section>
 
               {/* Faturamento e dados bancários */}
-              <Section icon={DollarSign} title="Faturamento e dados bancários">
+              <Section icon={DollarSign} title="Faturamento e dados bancários" color={{ border: "#BEF264", bg: "#F7FEE7", icon: "#4D7C0F" }}>
                 <Field label="Faturamento estimado">
                   <input value={editing.faturamento} onChange={(e) => handleSaveField({ faturamento: e.target.value })} className={inputCls} placeholder="Ex: R$ 80 mil/mês" />
                 </Field>
@@ -1435,7 +1437,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               </Section>
 
               {/* Contrato social */}
-              <Section icon={Users} title="Contrato social — sócios, participação e gestores">
+              <Section icon={Users} title="Contrato social — sócios, participação e gestores" color={{ border: "#34D399", bg: "#ECFDF5", icon: "#065F46" }}>
                 <Field label="Cartão CNPJ (anexo)">
                   <div className="flex items-center gap-2 flex-wrap">
                     <label className="flex items-center gap-1.5 text-xs border border-stone-300 rounded-md px-3 py-1.5 cursor-pointer hover:bg-stone-50 text-stone-600">
@@ -1496,7 +1498,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               </Section>
 
               {/* Reuniões */}
-              <Section icon={Mic} title="Transcrição de reunião e resumo executivo" defaultOpen={false}>
+              <Section icon={Mic} title="Transcrição de reunião e resumo executivo" defaultOpen={false} color={{ border: "#2DD4BF", bg: "#F0FDFA", icon: "#0D9488" }}>
                 <div className="grid grid-cols-1 gap-2">
                   <Field label="Transcrição da reunião">
                     <textarea value={novaReuniao.transcricao} onChange={(e) => setNovaReuniao({ ...novaReuniao, transcricao: e.target.value })} rows={3} className={textareaCls} placeholder="Cole ou digite a transcrição..." />
@@ -1522,7 +1524,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               </Section>
 
               {/* Visitas */}
-              <Section icon={Calendar} title="Abertura de conta e visita periódica">
+              <Section icon={Calendar} title="Abertura de conta e visita periódica" color={{ border: "#93C5FD", bg: "#EFF6FF", icon: "#1D4ED8" }}>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Última visita">
                     <input type="date" value={editing.ultimaVisita} onChange={(e) => handleSaveField({ ultimaVisita: e.target.value })} className={inputCls} />
@@ -1534,7 +1536,7 @@ function CRMWorkspace({ modo, onSwitchModo, currentUser, onLogout }) {
               </Section>
 
               {/* Timeline */}
-              <Section icon={Clock} title="Linha do tempo" defaultOpen={false}>
+              <Section icon={Clock} title="Linha do tempo" defaultOpen={false} color={{ border: "#4ADE80", bg: "#F0FDF4", icon: "#166534" }}>
                 <div className="flex gap-2 mb-2">
                   <input value={novoEvento} onChange={(e) => setNovoEvento(e.target.value)} placeholder="Registrar novo evento..." className={inputCls + " flex-1"} onKeyDown={(e) => e.key === "Enter" && addTimelineEvent(novoEvento)} />
                   <button onClick={() => addTimelineEvent(novoEvento)} className="text-xs bg-emerald-800 text-white px-3 rounded-md hover:bg-emerald-900">Adicionar</button>
