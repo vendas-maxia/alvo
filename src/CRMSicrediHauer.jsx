@@ -2409,7 +2409,7 @@ function UsuariosView({ currentUser }) {
 // deixe REQUIRE_LOGIN em false — o CRM abre direto, sem pedir login, do jeito que estava antes.
 // Quando terminar os passos (migração SQL + criar os logins em Authentication > Users),
 // troque para true e o login/permissões passam a valer.
-const REQUIRE_LOGIN = false;
+const REQUIRE_LOGIN = true;
 
 function AuthGate() {
   const [session, setSession] = useState(undefined); // undefined = carregando, null = deslogado
