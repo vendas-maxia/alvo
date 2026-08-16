@@ -2233,10 +2233,11 @@ function LoginScreen() {
     e.preventDefault();
     setErro("");
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: senha });
     setLoading(false);
     if (error) {
-      setErro("E-mail ou senha inválidos.");
+      console.error("Erro de login:", error);
+      setErro(error.message || "E-mail ou senha inválidos.");
     }
   }
 
@@ -2297,10 +2298,11 @@ function UsuariosView({ currentUser }) {
 
   async function handleAdd(e) {
     e.preventDefault();
-    if (!novo.email.trim()) return;
+    const emailLimpo = novo.email.trim().toLowerCase();
+    if (!emailLimpo) return;
     setSalvando(true);
     setErro("");
-    const { error } = await supabase.from("crm_usuarios").insert([novo]);
+    const { error } = await supabase.from("crm_usuarios").insert([{ ...novo, email: emailLimpo }]);
     setSalvando(false);
     if (error) {
       setErro(error.message);
@@ -2426,13 +2428,27 @@ function AuthGate() {
     }
     let ativo = true;
     setPerfil(undefined);
+    const emailLogado = (session.user.email || "").trim();
     supabase
       .from("crm_usuarios")
       .select("*")
-      .eq("email", session.user.email)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (ativo) setPerfil(data || null);
+      .ilike("email", emailLogado) // ilike = compara sem diferenciar maiúsculas/minúsculas
+      .then(({ data, error }) => {
+        if (!ativo) return;
+        if (error) {
+          console.error("Erro ao buscar permissão do usuário:", error);
+          setPerfil(null);
+          return;
+        }
+        if (!data || data.length === 0) {
+          setPerfil(null);
+        } else if (data.length > 1) {
+          // e-mail duplicado na tabela — usa o mais recente e avisa no console
+          console.warn("E-mail duplicado em crm_usuarios:", emailLogado, data);
+          setPerfil(data.sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""))[0]);
+        } else {
+          setPerfil(data[0]);
+        }
       });
     return () => { ativo = false; };
   }, [session]);
